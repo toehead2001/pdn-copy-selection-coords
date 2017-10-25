@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Reflection;
-using System.Collections.Generic;
 using PaintDotNet;
 using PaintDotNet.Effects;
 using PaintDotNet.PropertySystem;
@@ -12,72 +11,19 @@ namespace CopySelectionCoordsEffect
 {
     public class PluginSupportInfo : IPluginSupportInfo
     {
-        public string Author
-        {
-            get
-            {
-                return ((AssemblyCopyrightAttribute)base.GetType().Assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0]).Copyright;
-            }
-        }
-        public string Copyright
-        {
-            get
-            {
-                return ((AssemblyDescriptionAttribute)base.GetType().Assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)[0]).Description;
-            }
-        }
-
-        public string DisplayName
-        {
-            get
-            {
-                return ((AssemblyProductAttribute)base.GetType().Assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false)[0]).Product;
-            }
-        }
-
-        public Version Version
-        {
-            get
-            {
-                return base.GetType().Assembly.GetName().Version;
-            }
-        }
-
-        public Uri WebsiteUri
-        {
-            get
-            {
-                return new Uri("http://www.getpaint.net/redirect/plugins.html");
-            }
-        }
+        public string Author => ((AssemblyCopyrightAttribute)base.GetType().Assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0]).Copyright;
+        public string Copyright => ((AssemblyDescriptionAttribute)base.GetType().Assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)[0]).Description;
+        public string DisplayName => ((AssemblyProductAttribute)base.GetType().Assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false)[0]).Product;
+        public Version Version => base.GetType().Assembly.GetName().Version;
+        public Uri WebsiteUri => new Uri("http://www.getpaint.net/redirect/plugins.html");
     }
 
     [PluginSupportInfo(typeof(PluginSupportInfo), DisplayName = "Copy Selection Coords")]
     public class CopySelectionCoordsEffectPlugin : PropertyBasedEffect
     {
-        public static string StaticName
-        {
-            get
-            {
-                return "Copy Selection Coords";
-            }
-        }
-
-        public static Image StaticIcon
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        public static string SubmenuName
-        {
-            get
-            {
-                return "Tools";
-            }
-        }
+        private const string StaticName = "Copy Selection Coords";
+        private static readonly Image StaticIcon = null;
+        private const string SubmenuName = "Tools";
 
         public CopySelectionCoordsEffectPlugin()
             : base(StaticName, StaticIcon, SubmenuName, EffectFlags.None)
@@ -106,9 +52,7 @@ namespace CopySelectionCoordsEffect
 
         protected override PropertyCollection OnCreatePropertyCollection()
         {
-            List<Property> props = new List<Property>();
-
-            return new PropertyCollection(props);
+            return PropertyCollection.CreateEmpty();
         }
 
         protected override void OnRender(Rectangle[] renderRects, int startIndex, int length)
@@ -119,6 +63,5 @@ namespace CopySelectionCoordsEffect
                 DstArgs.Surface.CopySurface(SrcArgs.Surface, renderRects[i].Location, renderRects[i]);
             }
         }
-
     }
 }
