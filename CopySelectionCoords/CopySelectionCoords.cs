@@ -113,6 +113,11 @@ namespace CopySelectionCoordsEffect
 
         protected override void OnRender(Rectangle[] renderRects, int startIndex, int length)
         {
+            if (length == 0) return;
+            for (int i = startIndex; i < startIndex + length; ++i)
+            {
+                DstArgs.Surface.CopySurface(SrcArgs.Surface, renderRects[i].Location, renderRects[i]);
+            }
         }
 
     }
