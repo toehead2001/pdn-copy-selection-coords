@@ -11,26 +11,22 @@ namespace CopySelectionCoordsEffect
 {
     public class PluginSupportInfo : IPluginSupportInfo
     {
-        public string Author => ((AssemblyCopyrightAttribute)base.GetType().Assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0]).Copyright;
-        public string Copyright => ((AssemblyDescriptionAttribute)base.GetType().Assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)[0]).Description;
-        public string DisplayName => ((AssemblyProductAttribute)base.GetType().Assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false)[0]).Product;
+        public string Author => base.GetType().Assembly.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright;
+        public string Copyright => base.GetType().Assembly.GetCustomAttribute<AssemblyDescriptionAttribute>().Description;
+        public string DisplayName => base.GetType().Assembly.GetCustomAttribute<AssemblyProductAttribute>().Product;
         public Version Version => base.GetType().Assembly.GetName().Version;
-        public Uri WebsiteUri => new Uri("http://www.getpaint.net/redirect/plugins.html");
+        public Uri WebsiteUri => new Uri("https://www.getpaint.net/redirect/plugins.html");
     }
 
     [PluginSupportInfo(typeof(PluginSupportInfo), DisplayName = "Copy Selection Coords")]
     public class CopySelectionCoordsEffectPlugin : PropertyBasedEffect
     {
-        private const string StaticName = "Copy Selection Coords";
-        private static readonly Image StaticIcon = null;
-        private const string SubmenuName = "Tools";
-
         public CopySelectionCoordsEffectPlugin()
-            : base(StaticName, StaticIcon, SubmenuName, EffectFlags.None)
+            : base("Copy Selection Coords", null, "Tools", new EffectOptions { Flags = EffectFlags.None })
         {
         }
 
-        Rectangle selection;
+        private Rectangle selection;
 
         protected override void OnSetRenderInfo(PropertyBasedEffectConfigToken newToken, RenderArgs dstArgs, RenderArgs srcArgs)
         {
