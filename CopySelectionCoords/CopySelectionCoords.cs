@@ -1,11 +1,11 @@
-﻿using System;
-using System.Drawing;
-using System.Reflection;
-using PaintDotNet;
+﻿using PaintDotNet;
+using PaintDotNet.AppModel;
+using PaintDotNet.Clipboard;
 using PaintDotNet.Effects;
 using PaintDotNet.PropertySystem;
-using System.Windows.Forms;
-using System.Threading;
+using System;
+using System.Drawing;
+using System.Reflection;
 
 namespace CopySelectionCoordsEffect
 {
@@ -26,24 +26,14 @@ namespace CopySelectionCoordsEffect
         {
         }
 
-        private Rectangle selection;
-
         protected override void OnSetRenderInfo(PropertyBasedEffectConfigToken newToken, RenderArgs dstArgs, RenderArgs srcArgs)
         {
-            selection = EnvironmentParameters.GetSelection(srcArgs.Surface.Bounds).GetBoundsInt();
+            Rectangle selection = EnvironmentParameters.GetSelection(srcArgs.Surface.Bounds).GetBoundsInt();
+            string selectionCoords = $"{selection.Left}, {selection.Top}, {selection.Width}, {selection.Height}";
 
-            Thread t = new Thread(new ThreadStart(CopySelectionCoords));
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start();
-            t.Join();
+            Services.GetService<IClipboardService>().SetText(selectionCoords);
 
             base.OnSetRenderInfo(newToken, dstArgs, srcArgs);
-        }
-
-        private void CopySelectionCoords()
-        {
-            string selectionCoords = $"{selection.Left}, {selection.Top}, {selection.Width}, {selection.Height}";
-            Clipboard.SetText(selectionCoords);
         }
 
         protected override PropertyCollection OnCreatePropertyCollection()
